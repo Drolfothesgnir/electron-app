@@ -1,0 +1,42 @@
+{
+  "appId": "com.kirill.electron-course",
+  "productName": "electron-app",
+  "files": [
+    "dist-electron",
+    "dist-react"
+  ],
+  "icon": "./desktopIcon.png",
+  "mac": {
+    "target": "dmg"
+  },
+  "linux": {
+    "target": "AppImage",
+    "category": "Utility"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "icon": "./src/assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Electron Course App",
+    "uninstallDisplayName": "Electron Course App",
+    "installerIcon": "./src/assets/icon.ico",
+    "uninstallerIcon": "./src/assets/icon.ico",
+    "installerHeaderIcon": "./src/assets/icon.ico",
+    "deleteAppDataOnUninstall": false,
+    "runAfterFinish": false,
+    "menuCategory": false,
+    "artifactName": "${productName}-${version}-Setup.${ext}"
+  }
+}
