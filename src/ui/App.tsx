@@ -18,7 +18,7 @@ function App() {
           count is {count}
         </button>
         <p>
-          Edit <code>src/ui/App.tsx</code> and save to test HMR
+          Pidar <code>src/ui/App.tsx</code> and save to test HMR
         </p>
       </div>
       <p className="read-the-docs">
