@@ -1,8 +1,8 @@
-import { app, BrowserWindow, Tray } from "electron";
-import path from "path";
-import { getAssetPath, getUiPath, ipcMainHandle, isDev } from "./util.js";
+import { app, BrowserWindow } from "electron";
+import { getUiPath, ipcMainHandle, isDev } from "./util.js";
 import { getStaticResourcesData, pollResources } from "./resourceManager.js";
 import { getPreloadPath } from "./pathResolver.js";
+import { createTray } from "./tray.js";
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
@@ -21,5 +21,26 @@ app.on("ready", () => {
 
   ipcMainHandle("getStaticData", getStaticResourcesData);
 
-  new Tray(path.join(getAssetPath(), "trayIcon.png"));
+  createTray(mainWindow);
+
+  handleCloseEvents(mainWindow);
 });
+
+function handleCloseEvents(mainWindow: BrowserWindow) {
+  let willClose = false;
+
+  mainWindow.on("close", (e) => {
+    if (willClose) return;
+
+    e.preventDefault();
+    mainWindow.hide();
+  });
+
+  app.on("before-quit", () => {
+    willClose = true;
+  });
+
+  mainWindow.on("show", () => {
+    willClose = false;
+  });
+}
