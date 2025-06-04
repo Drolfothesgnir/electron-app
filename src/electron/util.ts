@@ -29,6 +29,10 @@ export function getUiPath() {
   return path.join(app.getAppPath(), "/dist-react/index.html");
 }
 
+export function getAssetPath() {
+  return path.join(app.getAppPath(), isDev() ? "." : "..", "/src/assets");
+}
+
 export function validateEventFrame(frame: WebFrameMain | null) {
   if (!frame) return;
 
