@@ -44,3 +44,13 @@ export function validateEventFrame(frame: WebFrameMain | null) {
     throw new Error("Malicious event");
   }
 }
+
+export function ipcMainOn<K extends keyof EventPayloadMapping>(
+  key: K,
+  callback: (payload: EventPayloadMapping[K]) => void
+) {
+  ipcMain.on(key, (event, payload) => {
+    validateEventFrame(event.senderFrame);
+    callback(payload);
+  });
+}

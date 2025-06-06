@@ -10,12 +10,15 @@ type StaticData = {
   totalMemoryGB: number;
 };
 
+type FrameWindowAction = "CLOSE" | "MAXIMIZE" | "MINIMIZE";
+
 type View = "CPU" | "RAM" | "STORAGE";
 
 type EventPayloadMapping = {
   statistics: Statistics;
   getStaticData: StaticData;
   changeView: View;
+  sendFrameAction: FrameWindowAction;
 };
 
 type UnsubscribeFunction = () => void;
@@ -29,5 +32,6 @@ interface Window {
     subscribeChangeView: (
       callback: (view: View) => void
     ) => UnsubscribeFunction;
+    sendFrameAction: (frameAction: FrameWindowAction) => void;
   };
 }
