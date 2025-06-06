@@ -3,20 +3,47 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 import useStatistics from "./useStatistics";
 import Chart from "./Chart";
+import useView from "./useView";
 
 function App() {
   const [count, setCount] = useState(0);
 
   const statistics = useStatistics(10);
 
+  const view = useView();
+
   const cpuUsages = useMemo(() => {
     return statistics.map(({ cpuUsage }) => cpuUsage);
   }, [statistics]);
 
+  const ramUsages = useMemo(() => {
+    return statistics.map(({ ramUsage }) => ramUsage);
+  }, [statistics]);
+
+  const storageUsages = useMemo(() => {
+    return statistics.map(({ storageUsage }) => storageUsage);
+  }, [statistics]);
+
+  const [title, activeUsages] = useMemo(() => {
+    switch (view) {
+      case "CPU":
+        return ["CPU Usage", cpuUsages];
+
+      case "RAM":
+        return ["RAM Usage", ramUsages];
+
+      case "STORAGE":
+        return ["Storage Usage", storageUsages];
+      default:
+        return ["CPU Usage", cpuUsages];
+    }
+  }, [view, cpuUsages, ramUsages, storageUsages]);
+
   return (
     <>
+      <h1>{title}</h1>
       <div style={{ height: 120 }}>
-        <Chart data={cpuUsages} maxDataPoints={10} />
+        <Chart data={activeUsages} maxDataPoints={10} />
       </div>
       <div>
         <a href="https://react.dev" target="_blank">
