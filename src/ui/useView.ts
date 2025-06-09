@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useView() {
+export default function useView(): [View, React.Dispatch<View>] {
   const [view, setView] = useState<View>("CPU");
 
   useEffect(() => {
@@ -9,5 +9,5 @@ export default function useView() {
     return unsub;
   }, []);
 
-  return view;
+  return [view, setView];
 }

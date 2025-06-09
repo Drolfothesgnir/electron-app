@@ -9,17 +9,19 @@ import {
 
 type BaseChartProps = {
   data: { value: number | undefined }[];
+  fill: string;
+  stroke: string;
 };
 
-export default function BaseChart(props: BaseChartProps) {
+export default function BaseChart({ data, stroke, fill }: BaseChartProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={props.data}>
+      <AreaChart data={data}>
         <CartesianGrid stroke="#333" strokeDasharray="5 5" fill="#1c1c1c" />
         <Area
           fillOpacity={0.3}
-          fill="#0a4d5c"
-          stroke="#5dd4ee"
+          fill={fill}
+          stroke={stroke}
           strokeWidth={3}
           type="monotone"
           dataKey="value"

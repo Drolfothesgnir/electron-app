@@ -12,7 +12,7 @@ app.on("ready", () => {
     webPreferences: {
       preload: getPreloadPath(),
     },
-    frame: false,
+    frame: isDev(),
   });
 
   if (isDev()) {

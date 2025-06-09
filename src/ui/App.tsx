@@ -1,16 +1,15 @@
-import { useMemo, useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useMemo } from "react";
 import "./App.css";
 import useStatistics from "./useStatistics";
 import Chart from "./Chart";
 import useView from "./useView";
+import useStaticData from "./useStaticData";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   const statistics = useStatistics(10);
+  const { staticData } = useStaticData();
 
-  const view = useView();
+  const [view, setView] = useView();
 
   const cpuUsages = useMemo(() => {
     return statistics.map(({ cpuUsage }) => cpuUsage);
@@ -24,59 +23,100 @@ function App() {
     return statistics.map(({ storageUsage }) => storageUsage);
   }, [statistics]);
 
-  const [title, activeUsages] = useMemo(() => {
+  const activeUsages = useMemo(() => {
     switch (view) {
       case "CPU":
-        return ["CPU Usage", cpuUsages];
+        return cpuUsages;
 
       case "RAM":
-        return ["RAM Usage", ramUsages];
+        return ramUsages;
 
       case "STORAGE":
-        return ["Storage Usage", storageUsages];
+        return storageUsages;
       default:
-        return ["CPU Usage", cpuUsages];
+        return cpuUsages;
     }
   }, [view, cpuUsages, ramUsages, storageUsages]);
 
   return (
     <>
-      <header>
-        <button
-          id="close"
-          onClick={() => window.electron.sendFrameAction("CLOSE")}
-        />
-        <button
-          id="minimize"
-          onClick={() => window.electron.sendFrameAction("MINIMIZE")}
-        />
-        <button
-          id="maximize"
-          onClick={() => window.electron.sendFrameAction("MAXIMIZE")}
-        />
-      </header>
-      <h1>{title}</h1>
-      <div style={{ height: 120 }}>
-        <Chart data={activeUsages} maxDataPoints={10} />
+      <Header />
+      <div className="main">
+        <div>
+          <SelectOption
+            data={cpuUsages}
+            subTitle={staticData?.cpuModel || ""}
+            title="CPU"
+            onClick={() => setView("CPU")}
+            view="CPU"
+          />
+          <SelectOption
+            data={ramUsages}
+            subTitle={`${staticData?.totalMemoryGB.toString() || ""} GB`}
+            title="RAM"
+            onClick={() => setView("RAM")}
+            view="RAM"
+          />
+          <SelectOption
+            data={storageUsages}
+            subTitle={`${staticData?.totalStorage.toString() || ""} GB`}
+            title="STORAGE"
+            onClick={() => setView("STORAGE")}
+            view="STORAGE"
+          />
+        </div>
+        <div className="mainGrid">
+          <Chart data={activeUsages} maxDataPoints={10} view={view} />
+        </div>
       </div>
-      <div>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + Pizda</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Pidar <code>src/ui/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
+  );
+}
+
+function Header() {
+  return (
+    <header>
+      <button
+        id="close"
+        onClick={() => window.electron.sendFrameAction("CLOSE")}
+      />
+      <button
+        id="minimize"
+        onClick={() => window.electron.sendFrameAction("MINIMIZE")}
+      />
+      <button
+        id="maximize"
+        onClick={() => window.electron.sendFrameAction("MAXIMIZE")}
+      />
+    </header>
+  );
+}
+
+type SelectOptionProps = {
+  data: number[];
+  title: string;
+  subTitle: string;
+  onClick: () => void;
+  view: View;
+};
+
+function SelectOption({
+  data,
+  title,
+  subTitle,
+  onClick,
+  view,
+}: SelectOptionProps) {
+  return (
+    <button className="selectOption" onClick={onClick}>
+      <div className="selectOptionTitle">
+        <div>{title}</div>
+        <div>{subTitle}</div>
+      </div>
+      <div className="selectOptionChart">
+        <Chart data={data} maxDataPoints={10} view={view} />
+      </div>
+    </button>
   );
 }
 
