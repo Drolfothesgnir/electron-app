@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { expect, Mock, test, vi } from "vitest";
+import { expect, test, vi } from "vitest";
+import type { Mock } from "vitest";
 import { createTray } from "./tray.js";
 import { app, BrowserWindow, Menu } from "electron";
 
